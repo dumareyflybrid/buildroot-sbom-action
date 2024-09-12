@@ -1,0 +1,57 @@
+name: 'Buildroot SBOM generator'
+description: 'Generates buildroot SBOM and legal-info and publishes them as artifacts'
+
+inputs:
+  output-directory: # Location of buildroot output directory
+    description: 'Buildroot output dir'
+    required: true
+    default: './output'
+
+  repo-version: # Version of the repository
+    description: 'Version of the repository'
+    required: true
+    default: '0.0.0'
+
+  repo-name: # Name of the repository
+    description: 'Name of the repository'
+    required: true
+    default: 'my-repo'
+    
+  repo-owner: # Owner of the repository
+    description: 'Owner of the repository'
+    required: true
+    default: 'my-org'
+
+outputs:
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Generate legal-info
+        working-directory: ${{ inputs.output-directory }}
+        run: |
+          make legal-info
+          make show-info > legal-info/cpe.json
+
+    - name: Generate SBOM
+      working-directory: ${{ inputs.output-directory }}/legal-info
+      env:
+        CYCLONE_DX_SCRIPT: "~/.local/lib/python3.10/site-packages/src/CycloneDX-Buildroot/generateBuildrootSBOM.py"
+      run: |
+        pip3 install CycloneDX-Buildroot
+        python $(CYCLONE_DX_SCRIPT) -i manifest.csv -c cpe.json -o sbom -n ${{ inputs.repo-name }} -v ${{ inputs.repo-version }} -m ${{ inputs.repo-owner }}
+
+    - name: Tar legal-info
+      working-directory: ${{ inputs.output-directory }}
+      run: tar -czf legal-info.tar.gz legal-info
+
+    - name: Publish legal-info
+      uses: actions/upload-artifact@v4
+      with:
+        name: legal-info-${{ inputs.repo-version }}.tar.gz
+        path: ./output/legal-info.tar.gz
+

@@ -23,6 +23,11 @@ inputs:
     required: true
     default: 'my-org'
 
+  publish-legal-info: # Publish legal-info - this can be very large
+    description: 'Publish legal-info'
+    required: false
+    default: 'false'
+
 runs:
   using: "composite"
   steps:
@@ -55,7 +60,15 @@ runs:
         tar -czf legal-info.tar.gz legal-info
         popd
 
+    - name: Publish SBOM json
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-${{ inputs.repo-version }}.json
+        path: ./output/legal-info/sbom.json
+
     - name: Publish legal-info
+      # This can be very large, so only publish if needed.
+      if: ${{ inputs.publish-legal-info == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: legal-info-${{ inputs.repo-version }}.tar.gz

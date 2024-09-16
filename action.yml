@@ -46,7 +46,7 @@ runs:
     - name: Generate SBOM
       shell: bash
       env:
-        CYCLONE_DX_SCRIPT: "~/.local/lib/python3.10/site-packages/src/CycloneDX-Buildroot/generateBuildrootSBOM.py"
+        CYCLONE_DX_SCRIPT: "${{ env.Python3_ROOT_DIR }}/lib/site-packages/src/CycloneDX-Buildroot/generateBuildrootSBOM.py"
       run: |
         pip3 install CycloneDX-Buildroot
         pushd ${{ inputs.output-directory }}/legal-info

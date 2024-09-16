@@ -50,7 +50,7 @@ runs:
       run: |
         pip3 install CycloneDX-Buildroot
         pushd ${{ inputs.output-directory }}/legal-info
-        python ${{ env.CYCLONE_DX_SCRIPT }} -i manifest.csv -c cpe.json -o sbom -n ${{ inputs.repo-name }} -v ${{ inputs.repo-version }} -m ${{ inputs.repo-owner }}
+        python ${{ env.CYCLONE_DX_SCRIPT }} -i manifest.csv -c cpe.json -o sbom -n "${{ inputs.repo-name }}" -v "${{ inputs.repo-version }}" -m "${{ inputs.repo-owner }}"
         popd
 
     - name: Tar legal-info

@@ -46,11 +46,14 @@ runs:
     - name: Generate SBOM
       shell: bash
       env:
-        CYCLONE_DX_SCRIPT: "${{ env.Python3_ROOT_DIR }}/lib/python3.10/site-packages/src/CycloneDX-Buildroot/generateBuildrootSBOM.py"
+        CYCLONE_DX_SCRIPT: "./venv/lib/python3.10/site-packages/src/CycloneDX-Buildroot/generateBuildrootSBOM.py"
       run: |
+        python3 -m venv venv
+        source ./venv/bin/activate
         pip3 install CycloneDX-Buildroot
         pushd ${{ inputs.output-directory }}/legal-info
         python ${{ env.CYCLONE_DX_SCRIPT }} -i manifest.csv -c cpe.json -o sbom -n "${{ inputs.repo-name }}" -v "${{ inputs.repo-version }}" -m "${{ inputs.repo-owner }}"
+        deactivate
         popd
 
     - name: Tar legal-info

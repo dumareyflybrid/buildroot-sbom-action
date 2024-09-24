@@ -46,7 +46,7 @@ runs:
     - name: Generate SBOM
       shell: bash
       env:
-        CYCLONE_DX_SCRIPT: "./venv/lib/python3.10/site-packages/src/CycloneDX-Buildroot/generateBuildrootSBOM.py"
+        CYCLONE_DX_SCRIPT: "../venv/lib/python3.10/site-packages/src/CycloneDX-Buildroot/generateBuildrootSBOM.py"
       run: |
         python3 -m venv venv
         source ./venv/bin/activate

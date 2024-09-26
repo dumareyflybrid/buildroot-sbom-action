@@ -52,7 +52,7 @@ runs:
         python3 -m venv venv
         source ./venv/bin/activate
         pip3 install CycloneDX-Buildroot
-        pushd ${{ inputs.output-directory }}/legal-info
+        pushd legal-info
         python ${{ env.CYCLONE_DX_SCRIPT }} -i manifest.csv -c cpe.json -o sbom -n "${{ inputs.repo-name }}" -v "${{ inputs.repo-version }}" -m "${{ inputs.repo-owner }}"
         deactivate
         popd

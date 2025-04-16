@@ -51,7 +51,7 @@ runs:
         pushd ${{ inputs.output-directory }}
         python3 -m venv venv
         source ./venv/bin/activate
-        pip3 install CycloneDX-Buildroot
+        pip3 install -v "CycloneDX-Buildroot==v1.1.1"
         pushd legal-info
         python ${{ env.CYCLONE_DX_SCRIPT }} -i manifest.csv -c cpe.json -o sbom -n "${{ inputs.repo-name }}" -v "${{ inputs.repo-version }}" -m "${{ inputs.repo-owner }}"
         deactivate
